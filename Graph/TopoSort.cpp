@@ -1,7 +1,7 @@
-std::pair<bool, std::vector<int>> topo_sort(const std::vector<std::vector<int>>& g) {
+pair<bool, vector<int>> topo_sort(const vector<vector<int>>& g) {
   int n = g.size();
   // init in_deg
-  std::vector<int> in_deg(n, 0);
+  vector<int> in_deg(n, 0);
   for (int u = 0; u < n; u++) {
     for (int v : g[u]) {
       in_deg[v]++;
@@ -9,8 +9,8 @@ std::pair<bool, std::vector<int>> topo_sort(const std::vector<std::vector<int>>&
   }
 
   // find topo order
-  std::vector<int> res;
-  std::queue<int> qu;
+  vector<int> res;
+  queue<int> qu;
   for (int u = 0; u < n; u++) {
     if (in_deg[u] == 0) {
       qu.push(u);

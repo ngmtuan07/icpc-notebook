@@ -13,7 +13,7 @@ struct EulerUndirected {
     ++deg[v];
     ++m;
   }
-  std::pair<bool, std::vector<int>> solve() {
+  pair<bool, vector<int>> solve() {
     int cntOdd = 0;
     int start = -1;
     for (int i = 0; i < n; i++) {
@@ -38,7 +38,7 @@ struct EulerUndirected {
       }
     }
 
-    std::vector<int> path;
+    vector<int> path;
     find_path(start, path);
 
     if (m + 1 != static_cast<int>(path.size())) {
@@ -49,16 +49,16 @@ struct EulerUndirected {
   }
   struct Edge {
     int to;
-    std::list<Edge>::iterator rev;
+    list<Edge>::iterator rev;
 
     Edge(int _to) : to(_to) {}
   };
   // private:
   int n, m;
-  std::vector<std::list<Edge>> adj;
-  std::vector<int> deg;
+  vector<list<Edge>> adj;
+  vector<int> deg;
 
-  void find_path(int v, std::vector<int>& path) {
+  void find_path(int v, vector<int>& path) {
     while (adj[v].size() > 0) {
       int next = adj[v].front().to;
       adj[next].erase(adj[v].front().rev);

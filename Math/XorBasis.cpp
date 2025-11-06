@@ -1,25 +1,29 @@
-struct Basis {
-  const int LGX = 19;
-  vector<int> a;
-  Basis() : a(LGX + 1, 0) {}
-  void add(int x) {
-    for (int i = LGX; i >= 0; --i) {
-      if (x & (1 << i)) {
-        if (a[i])
-          x ^= a[i];
-        else {
-          a[i] = x;
-          break;
-        }
-      }
+struct XorBasis {
+  vector<T> basis;
+  bool add(T mask) {
+    for (auto u : basis) mask = min(mask, mask ^ u);
+    for (auto& u : basis) u = min(u, u ^ mask);
+    if (mask) {
+      basis.push_back(mask);
+      return true;
     }
+    return false;
   }
-  void add(Basis o) {
-    for (int i = LGX; i >= 0; --i) add(o.a[i]);
+  T getMax() {
+    T res = 0;
+    for (auto u : basis) res = max(res, res ^ u);
+    return res;
   }
-  bool is_spannable(int x) {
-    for (int i = LGX; i >= 0; --i)
-      if (x & (1 << i)) x ^= a[i];
-    return (x == 0);
+  void init() { sort(basis.begin(), basis.end()); }
+  bool InSpan(T mask) {
+    for (auto u : basis) mask = min(mask, mask ^ u);
+    return (mask == 0);
+  }
+  T getK(T k)  // 0-indexed
+  {
+    T res = 0;
+    for (int i = sz(basis) - 1; i >= 0; i--)
+      if (k >> i & 1) res ^= basis[i];
+    return res;
   }
 };

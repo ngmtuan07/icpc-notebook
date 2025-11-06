@@ -1,73 +1,67 @@
-const ll INF = 1e18;
-struct Dinic {
-  const static bool SCALING = false;  // scaling = EV log(max C) with larger constant
-  ll lim = 1;
-  struct Edge {
-    int u, v;
-    ll cap, flow;
+// Worst-case time complexity: O(V^2 * E)
+// Unit-capacity networks (all capacities = 1): O(min(V^{2/3}, sqrt(E)) * E).
+// Bipartite matching (as a special case): O(sqrt(V) * E).
+// (often near O(E * sqrt(V)) or O(E * V) in practice depending on structure).
+#define int long long
+const int inf = 1e18;
+struct dinic {
+  struct edge {
+    int v, oth, fl, cap;
   };
-  int n, s, t;
-  vector<int> level, ptr;
-  vector<Edge> e;
-  vector<vector<int>> g;
-  Dinic(int _n) : n(_n), level(_n), ptr(_n), g(_n) {
-    e.clear();
-    for (int i = 0; i < n; ++i) {
-      ptr[i] = 0;
-      g[i].clear();
-    }
+  vector<vector<edge> > adj;
+  vector<int> ptr, lv;
+  dinic() {}
+  int st, en;
+  dinic(int n) {
+    st = n + 1;
+    en = n + 2;
+    adj.assign(n + 7, vector<edge>());
+    ptr.assign(n + 7, 0);
+    lv.assign(n + 7, 0);
   }
-  void add_edge(int u, int v, ll c) {
-    debug(u, v, c);
-    g[u].push_back(sz(e));
-    e.push_back({u, v, c, 0});
-    g[v].push_back(sz(e));
-    e.push_back({v, u, 0, 0});
+  void add(int u, int v, int cap, int undirected = 0) {
+    adj[u].push_back({v, (int)adj[v].size(), 0, cap});
+    adj[v].push_back({u, (int)adj[u].size() - 1, 0, undirected * cap});
   }
-  ll get_max_flow(int _s, int _t) {
-    s = _s, t = _t;
-    ll flow = 0;
-    for (lim = SCALING ? (1 << 30) : 1; lim > 0; lim >>= 1) {
-      while (1) {
-        if (!bfs()) break;
-        fill(all(ptr), 0);
-        while (ll pushed = dfs(s, INF)) flow += pushed;
-      }
-    }
-    return flow;
-  }
- private:
   bool bfs() {
+    fill(lv.begin(), lv.end(), -1);
+    lv[st] = 0;
     queue<int> q;
-    q.push(s);
-    fill(all(level), -1);
-    level[s] = 0;
-    while (!q.empty()) {
+    q.push(st);
+    while (q.size() && lv[en] == -1) {
       int u = q.front();
       q.pop();
-      for (int id : g[u]) {
-        if (e[id].cap - e[id].flow < 1) continue;
-        if (level[e[id].v] != -1) continue;
-        if (SCALING and e[id].cap - e[id].flow < lim) continue;
-        level[e[id].v] = level[u] + 1;
-        q.push(e[id].v);
+      for (edge& x : adj[u]) {
+        if (lv[x.v] == -1 && x.cap > x.fl) {
+          q.push(x.v);
+          lv[x.v] = lv[u] + 1;
+        }
       }
     }
-    return level[t] != -1;
+    return lv[en] != -1;
   }
-  ll dfs(int u, ll flow) {
-    if (!flow) return 0;
-    if (u == t) return flow;
-    for (; ptr[u] < sz(g[u]); ++ptr[u]) {
-      int id = g[u][ptr[u]], to = e[id].v;
-      if (level[to] != level[u] + 1) continue;
-      ll pushed = dfs(to, min(flow, e[id].cap - e[id].flow));
-      if (pushed) {
-        e[id].flow += pushed;
-        e[id ^ 1].flow -= pushed;
-        return pushed;
+  int dfs(int u, int flowin) {
+    if (u == en) return flowin;
+    int flout = 0;
+    for (; ptr[u] < (int)adj[u].size(); ptr[u]++) {
+      edge& x = adj[u][ptr[u]];
+      if (x.cap > x.fl && lv[x.v] == lv[u] + 1) {
+        int tmp = dfs(x.v, min(flowin, x.cap - x.fl));
+        x.fl += tmp;
+        adj[x.v][x.oth].fl -= tmp;
+        flout += tmp;
+        flowin -= tmp;
+        if (flowin == 0) break;
       }
     }
-    return 0;
+    return flout;
+  }
+  int max_flow() {
+    int res = 0;
+    while (bfs()) {
+      fill(ptr.begin(), ptr.end(), 0);
+      res += dfs(st, inf);
+    }
+    return res;
   }
 };

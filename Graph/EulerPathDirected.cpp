@@ -7,11 +7,11 @@ struct EulerDirected {
     in_deg[v]++;
     out_deg[u]++;
   }
-  std::pair<bool, std::vector<int>> solve() {
+  pair<bool, vector<int>> solve() {
     int start = -1, last = -1;
     for (int i = 0; i < n; i++) {
       // for all u, |in_deg(u) - out_deg(u)| <= 1
-      if (std::abs(in_deg[i] - out_deg[i]) > 1) return {false, {}};
+      if (abs(in_deg[i] - out_deg[i]) > 1) return {false, {}};
 
       if (out_deg[i] > in_deg[i]) {
         // At most 1 vertex with out_deg[u] - in_deg[u] = 1 (start vertex)
@@ -37,12 +37,12 @@ struct EulerDirected {
       // no start vertex --> all vertices have degree == 0
       if (start < 0) return {true, {}};
     }
-    std::vector<int> path;
+    vector<int> path;
     find_path(start, path);
-    std::reverse(path.begin(), path.end());
+    reverse(path.begin(), path.end());
 
     // check that we visited all vertices with degree > 0
-    std::vector<bool> visited(n, false);
+    vector<bool> visited(n, false);
     for (int u : path) visited[u] = true;
 
     for (int u = 0; u < n; u++) {
@@ -55,10 +55,10 @@ struct EulerDirected {
   }
  private:
   int n;
-  std::vector<std::list<int>> adj;
-  std::vector<int> in_deg, out_deg;
+  vector<list<int>> adj;
+  vector<int> in_deg, out_deg;
 
-  void find_path(int v, std::vector<int>& path) {
+  void find_path(int v, vector<int>& path) {
     while (adj[v].size() > 0) {
       int next = adj[v].front();
       adj[v].pop_front();
