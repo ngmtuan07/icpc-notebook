@@ -1,0 +1,5 @@
+
+	\subsubsection{Mo on Tree}
+		Let a query be (u, v). We will try to map each query to a range in the flattened array. Let ST(u) ≤ ST(v) where ST(u) denotes visit time of node u in T. Let P = LCA(u, v) denote the lowest common ancestor of nodes u and v. There are 2 possible cases: \\
+        Case 1: P = u: our query range would be [ST(u), ST(v)] \\
+        Case 2: P ≠ u: our query range would be [EN(u), ST(v)] + [ST(P), ST(P)]
