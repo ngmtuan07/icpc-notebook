@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "notebook": "notebook-generator ./notebook-source --size 8 --columns 3 --initials \"University of Massachusetts Amherst\""
+  },
+  "devDependencies": {
+    "notebook-generator": "^1.4.7"
+  }
+}
