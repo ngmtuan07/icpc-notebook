@@ -1,3 +1,4 @@
+// solve (a or not b) and (not c or not d) and (not a or c) and ...
 struct TwoSatSolver {
   int n_vars;
   int n_vertices;
