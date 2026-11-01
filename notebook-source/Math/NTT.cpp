@@ -9,15 +9,12 @@ ll power(ll a, ll b) {
 	return res;
 }
 
-void ntt(V<ll> &a, bool invert = false) {
+void ntt(vll &a, bool invert = false) {
 	int n = a.size();
-	int LG = 31 - __builtin_clz(n);
-	V<int> rev(n);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < LG; j++) {
-			rev[i] |= (i >> (LG - 1 - j) & 1) << j;
-		}
-	}
+	int LG = __builtin_ctz(n);
+	vi rev(n);
+	for (int i = 1; i < n; i++)
+		rev[i] = rev[i >> 1] >> 1 | (i & 1) << (LG - 1);
 	for (int i = 0; i < n; i++) {
 		if (i < rev[i]) {
 			swap(a[i], a[rev[i]]);
@@ -44,7 +41,7 @@ void ntt(V<ll> &a, bool invert = false) {
 	}
 }
 
-V<ll> convolution(V<ll> a, V<ll> b) {
+vll convolution(vll a, vll b) {
 	int n = 1;
 	while (n < a.size() + b.size()) n <<= 1;
 	a.resize(n);
