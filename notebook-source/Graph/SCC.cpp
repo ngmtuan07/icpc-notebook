@@ -2,7 +2,7 @@ struct DirectedDfs {
   vector<vector<int>> g;
   int n;
   vector<int> num, low, current, S;
-  int counter;
+  int cnt;
   vector<int> comp_ids;
   vector<vector<int>> scc;
 
@@ -12,7 +12,7 @@ struct DirectedDfs {
         num(n, -1),
         low(n, 0),
         current(n, 0),
-        counter(0),
+        cnt(0),
         comp_ids(n, -1) {
     for (int i = 0; i < n; i++) {
       if (num[i] == -1) dfs(i);
@@ -20,7 +20,7 @@ struct DirectedDfs {
   }
 
   void dfs(int u) {
-    low[u] = num[u] = counter++;
+    low[u] = num[u] = cnt++;
     S.push_back(u);
     current[u] = 1;
     for (auto v : g[u]) {
@@ -42,8 +42,8 @@ struct DirectedDfs {
 
   // build DAG of strongly connected components
   // Returns: adjacency list of DAG
-  std::vector<std::vector<int>> build_scc_dag() {
-    std::vector<std::vector<int>> dag(scc.size());
+  vector<vector<int>> build_scc_dag() {
+    vector<vector<int>> dag(scc.size());
     for (int u = 0; u < n; u++) {
       int x = comp_ids[u];
       for (int v : g[u]) {

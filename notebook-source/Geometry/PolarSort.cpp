@@ -1,13 +1,9 @@
-bool half(PT p) {
-    return p.y > 0.0 || (p.y == 0.0 && p.x < 0.0);
+ll cross(P a, P b) { return a.first * b.second - a.second * b.first; }
+int half(P p) {
+	return (p.second > 0 || (p.second == 0 && p.first > 0)) ? 0 : 1;
 }
-void polar_sort(vector<PT> &v) { // sort points in counterclockwise
-    sort(v.begin(), v.end(), [](PT a,PT b) {
-        return make_tuple(half(a), 0.0, a.norm2()) < make_tuple(half(b), cross(a, b), b.norm2());
-    });
-}
-void polar_sort(vector<PT> &v, PT o) { // sort points in counterclockwise with respect to point o
-    sort(v.begin(), v.end(), [&](PT a,PT b) {
-        return make_tuple(half(a - o), 0.0, (a - o).norm2()) < make_tuple(half(b - o), cross(a - o, b - o), (b - o).norm2());
-    });
-}
+sort(v.begin(), v.end(), [](const P& a, const P& b) {
+	int ha = half(a), hb = half(b);
+	if (ha != hb) return ha < hb;
+	return cross(a, b) > 0;
+});
